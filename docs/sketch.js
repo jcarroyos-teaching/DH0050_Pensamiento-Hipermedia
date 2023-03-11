@@ -1,30 +1,59 @@
+// Where is the car
+let x, y;
+
+// crear la clase Carro
+class Carro {
+  constructor(alto,ancho,color,name){
+    this.alto = alto;
+    this.ancho = ancho;
+    this.color = color;
+    this.name = name;
+  } 
+}
+
+
+
 function setup() {
-  let d = 70;
-  let p1 = d;
-  let p2 = p1 + d;
-  let p3 = p2 + d;
-  let p4 = p3 + d;
 
-  // Define el lienzo de 720 pixeles de ancho y 400 de alto
-  createCanvas(720, 400);
-  background(0);
-  noSmooth();
+  createCanvas(400, 200);
+  // Start position
+  y = height - height/4;
+  x = 0;
+  // crear una instancia de Carro llamada miCarro
+  let miCarro = new Carro (10,20,(red),"Mi nave");
+  
+  console.log("miCarro ancho is: " + miCarro.ancho);
+  console.log("miCarro alto is: " + miCarro.alto);
+  console.log("Nombre de miCarro es: " + miCarro.name);
+}
 
-  translate(140, 0);
+function draw() {
+  background(200);  
+  display();
+  move();
+  //console.log(miCarro.alto);
+  
+  let miCarro = new Carro (10,20,(red),"miNave");
+  
+}
 
-  // Dibuja una caja gris
-  stroke(153);
-  line(p3, p3, p2, p3);
-  line(p2, p3, p2, p2);
-  line(p2, p2, p3, p2);
-  line(p3, p2, p3, p3);
+function move(){
+  // Jiggling randomly
+  y = y + random(-1, 1);
+  
+  if (x > width) {
+    // Reset 
+    x = 0;
+    y = height - height/4;
+  } else {
+    // Moving up at a constant speed
+    x = x + 1;
+  }
+}
 
-  // Dibuja puntos blancos
-  stroke(255);
-  point(p1, p1);
-  point(p1, p3);
-  point(p2, p4);
-  point(p3, p1);
-  point(p4, p2);
-  point(p4, p4);
+function display(){
+  // Draw a car
+  stroke(50);
+  fill(255,4,150);
+  rect(x, y, 20, 10);
 }
