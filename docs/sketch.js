@@ -3,7 +3,6 @@ let miCarro1;
 let miCarro2;
 
 function setup() {
-  song = loadSound('buzz.mp3');
   createCanvas(400, 200);
   miCarro1 = new Carro(0, 190, 50, 10, 1);
   miCarro2 = new Carro(width - 50, 190, 40, 10, -1);
