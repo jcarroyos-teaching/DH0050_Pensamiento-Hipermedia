@@ -1,59 +1,96 @@
-// Where is the car
-let x, y;
 
-// crear la clase Carro
-class Carro {
-  constructor(alto,ancho,color,name){
-    this.alto = alto;
-    this.ancho = ancho;
-    this.color = color;
-    this.name = name;
-  } 
-}
-
-
+let miCarro1;
+let miCarro2;
 
 function setup() {
-
+  song = loadSound('buzz.mp3');
   createCanvas(400, 200);
-  // Start position
-  y = height - height/4;
-  x = 0;
-  // crear una instancia de Carro llamada miCarro
-  let miCarro = new Carro (10,20,(red),"Mi nave");
-  
-  console.log("miCarro ancho is: " + miCarro.ancho);
-  console.log("miCarro alto is: " + miCarro.alto);
-  console.log("Nombre de miCarro es: " + miCarro.name);
+  miCarro1 = new Carro(0, 190, 50, 10, 1);
+  miCarro2 = new Carro(width - 50, 190, 40, 10, -1);
 }
 
 function draw() {
-  background(200);  
-  display();
-  move();
-  //console.log(miCarro.alto);
+  background(0);
+  miCarro1.display("red");
+  miCarro2.display("blue");
   
-  let miCarro = new Carro (10,20,(red),"miNave");
+  if (miCarro1.detectCollision(miCarro2)) {
+    console.log("Los carros han chocado");
+  }
   
 }
 
-function move(){
-  // Jiggling randomly
-  y = y + random(-1, 1);
-  
-  if (x > width) {
-    // Reset 
-    x = 0;
-    y = height - height/4;
-  } else {
-    // Moving up at a constant speed
-    x = x + 1;
+function keyPressed() {
+  if (keyCode === 32) {
+    miCarro1.saltar();
   }
 }
 
-function display(){
-  // Draw a car
-  stroke(50);
-  fill(255,4,150);
-  rect(x, y, 20, 10);
+
+class Carro {
+  constructor(x, y, width, height, direction) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.direction = direction;
+    this.isJumping = false;
+    this.jumpForce = 10;
+    this.gravity = 0.5;
+    this.velocity = 0;
+    this.xSpeed = 2;
+  }
+
+  display(color) {
+    fill(color);
+    rect(this.x, this.y, this.width, this.height);
+    
+    this.y = this.y + random(-0.65, 0.65);
+
+    if (this.isJumping) {
+      this.velocity += this.gravity;
+      this.y += this.velocity;
+      if (this.y >= height - this.height) {
+        this.isJumping = false;
+        this.y = height - this.height;
+      }
+    } else {
+      this.x += this.direction * this.xSpeed;
+      if (this.x + this.width > width || this.x < 0) {
+        this.direction *= -1;
+        this.y = 190;
+      }
+    }
+        // Actualizamos la posición horizontal del carro en cada iteración
+    this.x += this.direction * this.xSpeed;
+    if (this.x + this.width > width || this.x < 0) {
+      this.direction *= -1;
+      this.y = 190;
+    }
+  }
+
+  saltar() {
+    if (!this.isJumping) {
+      this.velocity = -this.jumpForce;
+      this.isJumping = true;
+    }
+  }
+  
+    detectCollision(otherCar) {
+    let left = this.x;
+    let right = this.x + this.width;
+    let top = this.y;
+    let bottom = this.y + this.height;
+
+    let otherLeft = otherCar.x;
+    let otherRight = otherCar.x + otherCar.width;
+    let otherTop = otherCar.y;
+    let otherBottom = otherCar.y + otherCar.height;
+
+    if (left < otherRight && right > otherLeft && top < otherBottom && bottom > otherTop) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
