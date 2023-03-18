@@ -1,6 +1,7 @@
-
 let miCarro1;
 let miCarro2;
+
+let colisiones = 0;
 
 function setup() {
   createCanvas(400, 200);
@@ -9,19 +10,24 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(255);
   miCarro1.display("red");
   miCarro2.display("blue");
   
   if (miCarro1.detectCollision(miCarro2)) {
-    console.log("Los carros han chocado");
+    console.log(colisiones);
   }
+  
+  textSize(20);
+  fill(0);
+  text("Colisiones: " + colisiones, 10, 30);
+
   
 }
 
 function keyPressed() {
   if (keyCode === 32) {
-    miCarro1.saltar();
+    miCarro2.saltar();
   }
 }
 
@@ -38,6 +44,7 @@ class Carro {
     this.gravity = 0.5;
     this.velocity = 0;
     this.xSpeed = 2;
+    this.colisionDetectada = false;
   }
 
   display(color) {
@@ -75,7 +82,7 @@ class Carro {
     }
   }
   
-    detectCollision(otherCar) {
+  detectCollision(otherCar) {
     let left = this.x;
     let right = this.x + this.width;
     let top = this.y;
@@ -84,11 +91,16 @@ class Carro {
     let otherLeft = otherCar.x;
     let otherRight = otherCar.x + otherCar.width;
     let otherTop = otherCar.y;
-    let otherBottom = otherCar.y + otherCar.height;
+    let otherBottom = otherCar.y +  otherCar.height;
 
     if (left < otherRight && right > otherLeft && top < otherBottom && bottom > otherTop) {
+      if (!this.colisionDetectada) { // verifica si la colisión ya ha sido detectada
+        colisiones++; // incrementa el contador
+        this.colisionDetectada = true; // establece que la colisión ya ha sido detectada
+      }
       return true;
     } else {
+      this.colisionDetectada = false; // establece que la colisión ya no ha sido detectada
       return false;
     }
   }
